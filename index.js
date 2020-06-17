@@ -6,11 +6,19 @@ const rennesParcThabor = { lat: 48.114384, lng: -1.669494 };
 const liffreTownhall = { lat: 48.21407, lng: -1.50546}
 const delta = 0.09;
 
+const txtLat = document.getElementById('lat');
+const txtLng = document.getElementById('lng');
+const btnReverseGeocode = document.getElementById('btnReverseGeocode');
+const reverseGeocodeForm = document.addEventListener('submit', reverseGeocode);
+const coords = { lat: 0, lng: 0 };
+btnReverseGeocode.addEventListener('click', reverseGeocode);
+const mouseCoords = { lat: 0, lng: 0 };
+
 var map = new mapboxgl.Map({
     container: 'map', // The container ID
     style: 'mapbox://styles/mapbox/light-v10', // The map style to use
     center: [liffreTownhall.lng, liffreTownhall.lat], // Starting position [lng, lat] is Rennes
-    zoom: 14 // Starting zoom level
+    zoom: 15 // Starting zoom level
 });
 
 map.on('load', function() {
@@ -62,5 +70,29 @@ geolocCtrl.on('geolocate', function (position) {
 
 // get GPS coords of where mouse click occured
 map.on('click', (e) => {
+    const clickedCoords = e.lngLat.wrap();
     console.log(e.lngLat.wrap()); 
-})
+    mouseCoords.lng = clickedCoords.lng;
+    mouseCoords.lat = clickedCoords.lat;
+    txtLng.value = mouseCoords.lng;
+    txtLat.value = mouseCoords.lat;
+});
+
+// reverse geocoding (from GPS coords to address)
+function reverseGeocode(e) {
+    e.preventDefault();
+    const lat = txtLat.value.trim();
+    const lng = txtLng.value.trim();
+    console.log('reverseGeocode() lat ', lat);    
+    console.log('reverseGeocode() lng ', lng);    
+    if(lat === '' || lng === '') {
+        console.log('lat or lng missing', lat, lng);
+        return;
+    }
+    const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${lng},${lat}.json?access_token=${keys.privateKey}`;
+    fetch(url)
+        .then(response => response.json())
+        .then(data => {
+            console.log('data', data);
+        });
+}
