@@ -32,3 +32,10 @@ map.on('load', function() {
     
     });
   });  
+
+  map.addControl(
+    new MapboxDirections({
+        accessToken: mapboxgl.accessToken
+    }),
+    'top-right'
+);
