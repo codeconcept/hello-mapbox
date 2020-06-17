@@ -14,6 +14,8 @@ const coords = { lat: 0, lng: 0 };
 btnReverseGeocode.addEventListener('click', reverseGeocode);
 const mouseCoords = { lat: 0, lng: 0 };
 
+const geocoderDiv = document.getElementById('geocoder');
+
 var map = new mapboxgl.Map({
     container: 'map', // The container ID
     style: 'mapbox://styles/mapbox/light-v10', // The map style to use
@@ -26,15 +28,21 @@ map.on('load', function() {
       accessToken: mapboxgl.accessToken, // Set the access token
       mapboxgl: mapboxgl, // Set the mapbox-gl instance
       zoom: 14, // Set the zoom level for geocoding results
+      language: 'fr',
       placeholder: "Enter an address or place name", // This placeholder text will display in the search bar
-      bbox: [liffreTownhall.lng - delta, liffreTownhall.lat - delta, liffreTownhall.lng + delta , liffreTownhall.lat + delta] // Set a bounding box around Rennes
+      bbox: [liffreTownhall.lng - delta, liffreTownhall.lat - delta, liffreTownhall.lng + delta , liffreTownhall.lat + delta] // Set a bounding box around a city
     });
-    // Add the geocoder to the map
-    map.addControl(geocoder, 'top-left'); // Add the search box to the top left
+
+    geocoderDiv.appendChild(geocoder.onAdd(map));
+
+    // // Add the geocoder to the map
+    // map.addControl(geocoder, 'top-left'); // Add the search box to the top left
 
     var marker = new mapboxgl.Marker({'color': '#008000'}) // Create a new green marker
     
     geocoder.on('result', function(data) { // When the geocoder returns a result
+        console.log("geocoder.on('result') / data", data);
+        
       var point = data.result.center; // Capture the result coordinates
     
       marker.setLngLat(point).addTo(map); // Add the marker to the map at the result coordinates
