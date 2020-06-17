@@ -43,14 +43,22 @@ map.addControl(
 
 // User current position
 // Add geolocate control to the map.
-const res = map.addControl(
-    new mapboxgl.GeolocateControl({
-        positionOptions: {
-            enableHighAccuracy: true
-        },
-        trackUserLocation: true
-    })
-);
+const geolocCtrl = new mapboxgl.GeolocateControl({
+    positionOptions: {
+        enableHighAccuracy: true
+    },
+    trackUserLocation: true
+});
+
+map.addControl(geolocCtrl);
+
+geolocCtrl.on('geolocate', function (position) {
+    console.log('geolocate evt gives position: ', position);
+    
+    const latitude = position.coords.latitude;
+    const longitude = position.coords.longitude;
+    console.log('lat, lng', latitude, longitude);
+});
 
 // get GPS coords of where mouse click occured
 map.on('click', (e) => {
