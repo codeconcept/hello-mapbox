@@ -51,3 +51,8 @@ const res = map.addControl(
         trackUserLocation: true
     })
 );
+
+// get GPS coords of where mouse click occured
+map.on('click', (e) => {
+    console.log(e.lngLat.wrap()); 
+})
